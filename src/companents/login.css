@@ -1,0 +1,85 @@
+/* Login.css */
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://atilganmakine.com.tr/wp-content/uploads/2020/07/forklift-slider-min.jpg');
+    background-size: cover; /* Arka planın ekran boyutuna göre yayılmasını sağlıyoruz */
+    background-position: center; /* Resmin ortalanmasını sağlıyoruz */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative; 
+  }
+  
+ 
+  .logo {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-27%); 
+    z-index: 10; 
+  }
+  
+  /* Login kutusunun stilini ayarlıyoruz */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .login-box {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  /* Diğer stil ayarları */
+  .login-box h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+  
+  .login-box input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .login-box button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .login-box button:hover {
+    background-color: #0056b3;
+  }
+  
+  .login-box h3 {
+    color: green;
+    margin-top: 20px;
+  }
+  
+  .error {
+    color: red;
+  }
+  
