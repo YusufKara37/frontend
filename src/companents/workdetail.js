@@ -58,7 +58,7 @@ const WorkDetail = () => {
 
   useEffect(() => {
     fetchWorkDetail();
-  }, [id]);
+  }, []);
 
   if (!work) return <p>Yükleniyor...</p>;
 
