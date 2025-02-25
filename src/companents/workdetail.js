@@ -8,7 +8,7 @@ const WorkDetail = () => {
 
   const workStageMap = {
     2: "Yapilamadi",
-    3: "Yapiliyor",
+    3: "beklemede",
     4: "Yapildi"
   };
 
