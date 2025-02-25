@@ -35,9 +35,8 @@ const Login = () => {
     <div className="login-container">
       {}
       <img 
-        src="https://atilganmakine.com.tr/wp-content/uploads/2020/08/atilgan-logo2.png" 
+        src="/atilgan-logo2.png" 
         alt="Atilgan Logo" 
-        className="logo" 
       />
       <div className="login-box">
         <h2>Giriş Yap</h2>
