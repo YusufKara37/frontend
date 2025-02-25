@@ -58,7 +58,9 @@ const WorkDetail = () => {
 
   useEffect(() => {
     fetchWorkDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
 
   if (!work) return <p>Yükleniyor...</p>;
 
