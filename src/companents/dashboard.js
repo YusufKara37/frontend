@@ -6,12 +6,12 @@ import { Link } from 'react-router-dom';
 const Dashboard = () => {
   const [works, setWorks] = useState([]);
   const [newWork, setNewWork] = useState({ title: '', description: '', cardNumber: '' });
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // İşleri API'den çekme
   const fetchWorks = async () => {
     try {
       const response = await axios.get('https://workfollowapi-production.up.railway.app/api/Work');
-      console.log(response.data); // Veriyi kontrol et
       setWorks(response.data);
     } catch (error) {
       console.log('Error fetching works:', error);
@@ -25,68 +25,66 @@ const Dashboard = () => {
   // Yeni iş ekleme
   const handleAddWork = async (e) => {
     e.preventDefault();
-
-    // Geçerli tarihi alıyoruz
     const currentDate = new Date().toISOString();
 
     const newWorkData = {
-      workName: newWork.title, // Başlık kısmı
-      workComment: newWork.description, // Açıklama kısmı
-      workStartDate: currentDate, // Başlangıç tarihi (şu anki tarih)
-      cardNumber: newWork.cardNumber // Kart numarası
+      workName: newWork.title,
+      workComment: newWork.description,
+      workStartDate: currentDate,
+      cardNumber: newWork.cardNumber
     };
 
     try {
       const response = await axios.post(
         'https://workfollowapi-production.up.railway.app/api/Work',
         newWorkData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        { headers: { 'Content-Type': 'application/json' } }
       );
       console.log("Başarıyla eklendi:", response.data);
-      await fetchWorks();
-      setNewWork({ title: '', description: '', cardNumber: '' });  // Formu sıfırlıyoruz
-    } catch (error) {
-      if (error.response) {
-        // API'den dönen hata cevabını yazdır
-        console.error("Hata mesajı:", error.response.data);
-      } else {
-        // Bağlantı hatası veya başka bir problem
-        console.error("İş eklenirken hata oluştu:", error.message);
+
+      // PDF yükleme varsa yükle
+      if (selectedFile) {
+        await handleFileUpload(response.data.workId);
       }
+
+      await fetchWorks();
+      setNewWork({ title: '', description: '', cardNumber: '' });
+      setSelectedFile(null);
+    } catch (error) {
+      console.error("İş eklenirken hata oluştu:", error.response?.data || error.message);
+    }
+  };
+
+  // PDF Dosya Yükleme
+  const handleFileUpload = async (workId) => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("workId", workId);
+
+    try {
+      await axios.post('https://workfollowapi-production.up.railway.app/api/Work/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      console.log("Dosya başarıyla yüklendi.");
+    } catch (error) {
+      console.error("Dosya yükleme hatası:", error.response?.data || error.message);
     }
   };
 
   // İş silme
   const handleDeleteWork = async (id) => {
-    console.log("Silinecek ID:", id);
     try {
       const response = await axios.delete(`https://workfollowapi-production.up.railway.app/api/Work/${id}`);
-     
       if (response.status === 204) {
         console.log("İş başarıyla silindi.");
-        // Silinen işi listeden çıkarıyoruz
         await fetchWorks();
-
       } else {
         console.error("Silme işlemi başarısız.");
       }
     } catch (error) {
-      // Daha detaylı hata loglaması
-      if (error.response) {
-        // API'den dönen hata mesajını loglayın
-        console.error('API Hatası:', error.response.data);
-        console.error('API Hatası Status:', error.response.status);
-      } else if (error.request) {
-        // API'ye istek gönderilemediğinde
-        console.error('API isteği yapılırken hata oluştu:', error.request);
-      } else {
-        // Genel hata mesajı
-        console.error('Hata oluştu:', error.message);
-      }
+      console.error('İş silme hatası:', error.response?.data || error.message);
     }
   };
 
@@ -100,17 +98,10 @@ const Dashboard = () => {
               <div key={work.workId} className="work-card">
                 <Link to={`/work/${work.workId}`} className='text-xl hover:underline duration-300 hover:text-blue-700'>{work.workName}</Link>
                 <p>{work.workComment}</p>
-                <p className="work-date">
-                  <strong>Başlangıç:</strong> {new Date(work.workStartDate).toLocaleString()}
-                </p>
-                {work.workAndDate &&
-                <p className="work-date">
-                  <strong>Bitiş:</strong> {new Date(work.workAndDate).toLocaleString()}
-                </p>
-                }
-                <button className="delete-btn" onClick={() => handleDeleteWork(work.workId)}>
-                  Sil
-                </button>
+                <p className="work-date"><strong>Başlangıç:</strong> {new Date(work.workStartDate).toLocaleString()}</p>
+                {work.workAndDate && <p className="work-date"><strong>Bitiş:</strong> {new Date(work.workAndDate).toLocaleString()}</p>}
+                
+                <button className="delete-btn" onClick={() => handleDeleteWork(work.workId)}>Sil</button>
               </div>
             ))
           ) : (
@@ -154,6 +145,16 @@ const Dashboard = () => {
               value={newWork.cardNumber}
               onChange={(e) => setNewWork({ ...newWork, cardNumber: e.target.value })}
               required
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="file">PDF Yükle</label>
+            <input
+              type="file"
+              id="file"
+              accept="application/pdf"
+              onChange={(e) => setSelectedFile(e.target.files[0])}
             />
           </div>
 
