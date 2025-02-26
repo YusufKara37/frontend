@@ -1,4 +1,4 @@
-/* Genel reset ve temel stil ayarları */
+
 * {
     margin: 0;
     padding: 0;
@@ -16,17 +16,17 @@
     width: 100%;
   }
   
-  /* Arka plan fotoğrafı */
+  
   body {
     background-image: url('https://atilganmakine.com.tr/wp-content/uploads/2020/07/forklift-slider-min.jpg');
-    background-size: cover;  /* Fotoğrafın ekranı tamamen kaplaması için */
+    background-size: cover;  
     background-position: center;
     background-repeat: no-repeat;
-    height: 100vh;  /* Ekranın tamamını kapsayacak şekilde */
-    width: 100%;  /* Genişliği de tamamen kaplasın */
+    height: 100vh; 
+    width: 100%; 
   }
   
-  /* Sayfa container */
+  
   .work-detail-container {
     display: flex;
     justify-content: center;
@@ -35,10 +35,10 @@
     width: 100%;
     padding: 30px;
     position: relative;
-    z-index: 1; /* İçeriğin fotoğrafın üstünde görünmesi için */
+    z-index: 1; 
   }
   
-  /* Detay kartı */
+  
   .work-detail-card {
     background-color: white;
     border-radius: 15px;
@@ -48,7 +48,7 @@
     padding: 40px;
     margin-top: 20px;
     position: relative;
-    z-index: 2; /* İçeriğin fotoğrafın üstünde görünmesi için */
+    z-index: 2; 
   }
   
   h2 {
@@ -98,7 +98,7 @@
     color: white;
   }
   
-  /* Butonlar */
+  
   button {
     padding: 12px 30px;
     font-size: 1.1rem;
@@ -130,7 +130,7 @@
     color: white;
   }
   
-  /* PDF İndirme butonu */
+  
   .pdf-btn {
     display: block;
     margin-top: 25px;
@@ -148,7 +148,7 @@
     background-color: #0056b3;
   }
   
-  /* Mobil uyumlu */
+  
   @media (max-width: 768px) {
     .work-detail-card {
       padding: 25px;
