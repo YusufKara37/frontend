@@ -18,6 +18,7 @@ const WorkDetail = () => {
       const response = await axios.get(
         `https://workfollowapi-production.up.railway.app/api/Work/${id}`
       );
+      console.log("API'den Gelen Veri:", response.data);
       setWork(response.data);
     } catch (error) {
       console.error("Hata oluştu:", error);

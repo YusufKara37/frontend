@@ -27,49 +27,27 @@ const Dashboard = () => {
     e.preventDefault();
     const currentDate = new Date().toISOString();
 
-    const newWorkData = {
-      workName: newWork.title,
-      workComment: newWork.description,
-      workStartDate: currentDate,
-      cardNumber: newWork.cardNumber
-    };
+    const formData = new FormData();
+    formData.append('WorkName', newWork.title);
+    formData.append('WorkComment', newWork.description);
+    formData.append('WorkStartDate', currentDate);
+    formData.append('CardNumber', newWork.cardNumber);
+    if (selectedFile) {
+      formData.append('File', selectedFile);
+    }
 
     try {
       const response = await axios.post(
-        'https://workfollowapi-production.up.railway.app/api/Work',
-        newWorkData,
-        { headers: { 'Content-Type': 'application/json' } }
+        'https://workfollowapi-production.up.railway.app/api/Work/create-with-file',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       console.log("Başarıyla eklendi:", response.data);
-
-      // PDF yükleme varsa yükle
-      if (selectedFile) {
-        await handleFileUpload(response.data.workId);
-      }
-
       await fetchWorks();
       setNewWork({ title: '', description: '', cardNumber: '' });
       setSelectedFile(null);
     } catch (error) {
       console.error("İş eklenirken hata oluştu:", error.response?.data || error.message);
-    }
-  };
-
-  // PDF Dosya Yükleme
-  const handleFileUpload = async (workId) => {
-    if (!selectedFile) return;
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("workId", workId);
-
-    try {
-      await axios.post('https://workfollowapi-production.up.railway.app/api/Work/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      console.log("Dosya başarıyla yüklendi.");
-    } catch (error) {
-      console.error("Dosya yükleme hatası:", error.response?.data || error.message);
     }
   };
 
@@ -100,7 +78,9 @@ const Dashboard = () => {
                 <p>{work.workComment}</p>
                 <p className="work-date"><strong>Başlangıç:</strong> {new Date(work.workStartDate).toLocaleString()}</p>
                 {work.workAndDate && <p className="work-date"><strong>Bitiş:</strong> {new Date(work.workAndDate).toLocaleString()}</p>}
-                
+                {work.pdfUrl && (
+                  <a href={work.pdfUrl} download className="download-btn">⬇️ PDF'yi İndir</a>
+                )}
                 <button className="delete-btn" onClick={() => handleDeleteWork(work.workId)}>Sil</button>
               </div>
             ))
