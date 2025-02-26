@@ -1,0 +1,167 @@
+/* Genel reset ve temel stil ayarları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  /* Arka plan fotoğrafı */
+  body {
+    background-image: url('https://atilganmakine.com.tr/wp-content/uploads/2020/07/forklift-slider-min.jpg');
+    background-size: cover;  /* Fotoğrafın ekranı tamamen kaplaması için */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;  /* Ekranın tamamını kapsayacak şekilde */
+    width: 100%;  /* Genişliği de tamamen kaplasın */
+  }
+  
+  /* Sayfa container */
+  .work-detail-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 30px;
+    position: relative;
+    z-index: 1; /* İçeriğin fotoğrafın üstünde görünmesi için */
+  }
+  
+  /* Detay kartı */
+  .work-detail-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 2; /* İçeriğin fotoğrafın üstünde görünmesi için */
+  }
+  
+  h2 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #2f4f70;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .text-gray {
+    color: #666;
+  }
+  
+  .work-detail-text {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  
+  .work-detail-text strong {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 15px;
+  }
+  
+  .bg-success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107;
+    color: black;
+  }
+  
+  .bg-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  /* Butonlar */
+  button {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 48%;
+    margin-top: 20px;
+  }
+  
+  button:hover {
+    transform: translateY(-5px);
+  }
+  
+  .bg-green {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .bg-red {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .bg-blue {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  /* PDF İndirme butonu */
+  .pdf-btn {
+    display: block;
+    margin-top: 25px;
+    padding: 12px 30px;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pdf-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Mobil uyumlu */
+  @media (max-width: 768px) {
+    .work-detail-card {
+      padding: 25px;
+    }
+  
+    button {
+      width: 100%;
+      margin-top: 15px;
+    }
+  
+    .pdf-btn {
+      width: 100%;
+      margin-top: 20px;
+    }
+  }
+  

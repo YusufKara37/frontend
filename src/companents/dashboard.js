@@ -50,6 +50,18 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteWork = async (id) => {
+    try {
+      const response = await axios.delete(`https://workfollowapi-production.up.railway.app/api/Work/${id}`);
+      if (response.status === 204) {
+        console.log("İş başarıyla silindi.");
+        await fetchWorks();
+      }
+    } catch (error) {
+      console.error("Silme işlemi başarısız:", error.message);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="jobs-list">
@@ -62,6 +74,7 @@ const Dashboard = () => {
                 <p>{work.workComment}</p>
                 <p className="work-date"><strong>Başlangıç:</strong> {new Date(work.workStartDate).toLocaleString()}</p>
                 {work.workAndDate && <p className="work-date"><strong>Bitiş:</strong> {new Date(work.workAndDate).toLocaleString()}</p>}
+                <button className="delete-btn" onClick={() => handleDeleteWork(work.workId)}>Sil</button>
               </div>
             ))
           ) : (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import "./workdetail.css"; // CSS dosyasını import edin
 
 const WorkDetail = () => {
   const { id } = useParams(); // URL'den id parametresini alıyoruz
@@ -12,22 +13,20 @@ const WorkDetail = () => {
     4: "Yapıldı",
   };
 
-  // ✅ useCallback ile fetchWorkDetail fonksiyonunu sarmaladık
   const fetchWorkDetail = useCallback(async () => {
     try {
       const response = await axios.get(
         `https://workfollowapi-production.up.railway.app/api/Work/${id}`
       );
-      console.log("API'den Gelen Veri:", response.data);
       setWork(response.data);
     } catch (error) {
       console.error("Hata oluştu:", error);
     }
-  }, [id]); // Sadece id değiştiğinde yeniden oluştur
+  }, [id]);
 
   useEffect(() => {
     fetchWorkDetail();
-  }, [fetchWorkDetail]); // Bağımlılıklar eklendi, artık Netlify hata vermeyecek
+  }, [fetchWorkDetail]);
 
   const handleDone = async () => {
     const body = {
@@ -68,46 +67,27 @@ const WorkDetail = () => {
   if (!work) return <p>Yükleniyor...</p>;
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-3xl bg-white shadow-md rounded-lg p-8">
-        {/* Başlık */}
-        <h2 className="text-2xl font-semibold text-gray-800 border-b pb-4">
-          İş Detayları
-        </h2>
-
-        {/* İçerik */}
-        <div className="mt-6 space-y-3 text-gray-700">
-          <p className="text-lg font-medium text-gray-600">
-            🔹 atg-{work.workId}
-          </p>
-          <p>
-            <strong className="text-gray-600">Başlık:</strong> {work.workName}
-          </p>
-          <p>
-            <strong className="text-gray-600">Açıklama:</strong>{" "}
-            {work.workComment}
-          </p>
-          <p>
-            <strong className="text-gray-600">Başlangıç Tarihi:</strong>{" "}
-            {new Date(work.workStartDate).toLocaleString()}
-          </p>
+    <div className="work-detail-container">
+      <div className="work-detail-card">
+        <h2>İş Detayları</h2>
+        <div className="work-detail-text">
+          <p><strong>İş ID:</strong> atg-{work.workId}</p>
+          <p><strong>Başlık:</strong> {work.workName}</p>
+          <p><strong>Açıklama:</strong> {work.workComment}</p>
+          <p><strong>Başlangıç Tarihi:</strong> {new Date(work.workStartDate).toLocaleString()}</p>
           {work.workAndDate && (
-            <p>
-              <strong className="text-gray-600">Bitiş Tarihi:</strong>{" "}
-              {new Date(work.workAndDate).toLocaleString()}
-            </p>
+            <p><strong>Bitiş Tarihi:</strong> {new Date(work.workAndDate).toLocaleString()}</p>
           )}
           <p>
-            <strong className="text-gray-600">Durum:</strong>
+            <strong>Durum:</strong>
             <span
-              className={`ml-2 px-3 py-1 rounded-md text-white 
-          ${
-            work.workStageId === 4
-              ? "bg-green-500"
-              : work.workStageId === 2
-              ? "bg-red-500"
-              : "bg-yellow-500"
-          }`}
+              className={`status-badge ${
+                work.workStageId === 4
+                  ? "bg-success"
+                  : work.workStageId === 2
+                  ? "bg-danger"
+                  : "bg-warning"
+              }`}
             >
               {workStageMap[work.workStageId]}
             </span>
@@ -116,30 +96,17 @@ const WorkDetail = () => {
 
         {/* PDF İndirme Butonu */}
         {work.pdfUrl && (
-          <div className="mt-6">
-            <a
-              href={work.pdfUrl}
-              target="_blank" // ✅ PDF yeni sekmede açılır
-              rel="noopener noreferrer"
-              className="w-full block text-center bg-blue-600 text-white px-4 py-2 rounded-md text-lg font-medium hover:bg-blue-700 transition duration-200"
-            >
-              ⬇️ PDF'yi Aç
-            </a>
-          </div>
+          <a href={work.pdfUrl} target="_blank" rel="noopener noreferrer" className="pdf-btn">
+            ⬇️ PDF'yi Aç
+          </a>
         )}
 
         {/* İş Durumu Güncelleme Butonları */}
-        <div className="mt-6 flex justify-between gap-4">
-          <button
-            className="flex-1 bg-green-600 text-white py-2 rounded-md text-lg font-medium hover:bg-green-700 transition duration-200"
-            onClick={handleDone}
-          >
+        <div className="flex gap-4">
+          <button className="bg-green" onClick={handleDone}>
             ✅ Yapıldı
           </button>
-          <button
-            className="flex-1 bg-red-600 text-white py-2 rounded-md text-lg font-medium hover:bg-red-700 transition duration-200"
-            onClick={handleFail}
-          >
+          <button className="bg-red" onClick={handleFail}>
             ❌ Yapılamadı
           </button>
         </div>
