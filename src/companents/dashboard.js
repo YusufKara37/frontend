@@ -11,6 +11,11 @@ const Dashboard = () => {
   const [editingWork, setEditingWork] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
+  const [position, setPosition] = useState({ top: 20, left: 20 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  // Fetch works from the API
   const fetchWorks = async () => {
     try {
       const response = await axios.get('https://workfollowapi-production.up.railway.app/api/Work');
@@ -24,6 +29,7 @@ const Dashboard = () => {
     fetchWorks();
   }, []);
 
+  // Add work function
   const handleAddWork = async (e) => {
     e.preventDefault();
     const currentDate = new Date().toISOString();
@@ -52,6 +58,7 @@ const Dashboard = () => {
     }
   };
 
+  // Delete work function
   const handleDeleteWork = async (id) => {
     try {
       const response = await axios.delete(`https://workfollowapi-production.up.railway.app/api/Work/${id}`);
@@ -64,6 +71,7 @@ const Dashboard = () => {
     }
   };
 
+  // Edit work function
   const handleEditWork = (work) => {
     setEditingWork(work);
     setNewWork({ title: work.workName, description: work.workComment, cardNumber: work.cardNumber });
@@ -100,6 +108,28 @@ const Dashboard = () => {
     }
   };
 
+  // Mouse down event to start dragging
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    const offsetX = e.clientX - position.left;
+    const offsetY = e.clientY - position.top;
+    setOffset({ x: offsetX, y: offsetY });
+  };
+
+  // Mouse move event to move the form
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      const newX = e.clientX - offset.x;
+      const newY = e.clientY - offset.y;
+      setPosition({ top: newY, left: newX });
+    }
+  };
+
+  // Mouse up event to stop dragging
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   return (
     <div className="dashboard-container">
       <div className="jobs-list">
@@ -123,7 +153,14 @@ const Dashboard = () => {
       </div>
 
       {isEditMode && (
-        <div className="edit-job-form">
+        <div
+          className="edit-job-form-left"
+          style={{ top: position.top, left: position.left }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp} // Mouse dışarıya çıkarsa formu bırak
+        >
           <h2>İş Düzenle</h2>
           <form onSubmit={handleUpdateWork}>
             <div className="input-group">
@@ -145,16 +182,7 @@ const Dashboard = () => {
                 required
               />
             </div>
-            <div className="input-group">
-              <label htmlFor="cardNumber">Kart Numarası</label>
-              <input
-                type="text"
-                id="cardNumber"
-                value={newWork.cardNumber}
-                onChange={(e) => setNewWork({ ...newWork, cardNumber: e.target.value })}
-                required
-              />
-            </div>
+            
             <button type="submit" className="submit-btn">Güncelle</button>
             <button type="button" className="cancel-btn" onClick={() => setIsEditMode(false)}>İptal</button>
           </form>
