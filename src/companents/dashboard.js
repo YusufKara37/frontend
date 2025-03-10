@@ -8,6 +8,8 @@ const Dashboard = () => {
   const [newWork, setNewWork] = useState({ title: '', description: '', cardNumber: '' });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [editingWork, setEditingWork] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const fetchWorks = async () => {
     try {
@@ -62,6 +64,42 @@ const Dashboard = () => {
     }
   };
 
+  const handleEditWork = (work) => {
+    setEditingWork(work);
+    setNewWork({ title: work.workName, description: work.workComment, cardNumber: work.cardNumber });
+    setIsEditMode(true);
+  };
+
+  const handleUpdateWork = async (e) => {
+    e.preventDefault();
+
+    const updatedWork = {
+      workId: editingWork.workId,
+      workName: newWork.title,
+      workComment: newWork.description,
+      workStartDate: editingWork.workStartDate,
+      workAndDate: editingWork.workAndDate,
+      cardNumber: newWork.cardNumber,
+      pdfUrl: editingWork.pdfUrl,
+      workStageId: editingWork.workStageId,
+      workPersonelId: editingWork.workPersonelId,
+    };
+
+    try {
+      const response = await axios.patch(
+        `https://workfollowapi-production.up.railway.app/api/Work/UpdateWork`,
+        updatedWork
+      );
+      console.log("İş başarıyla güncellendi:", response.data);
+      await fetchWorks();
+      setEditingWork(null);
+      setIsEditMode(false);
+    } catch (error) {
+      console.error("Güncelleme sırasında hata oluştu:", error.response?.data || error.message);
+      alert("Güncelleme sırasında bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="jobs-list">
@@ -75,6 +113,7 @@ const Dashboard = () => {
                 <p className="work-date"><strong>Başlangıç:</strong> {new Date(work.workStartDate).toLocaleString()}</p>
                 {work.workAndDate && <p className="work-date"><strong>Bitiş:</strong> {new Date(work.workAndDate).toLocaleString()}</p>}
                 <button className="delete-btn" onClick={() => handleDeleteWork(work.workId)}>Sil</button>
+                <button className="edit-btn" onClick={() => handleEditWork(work)}>Düzenle</button>
               </div>
             ))
           ) : (
@@ -82,6 +121,45 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {isEditMode && (
+        <div className="edit-job-form">
+          <h2>İş Düzenle</h2>
+          <form onSubmit={handleUpdateWork}>
+            <div className="input-group">
+              <label htmlFor="title">İş Başlığı</label>
+              <input
+                type="text"
+                id="title"
+                value={newWork.title}
+                onChange={(e) => setNewWork({ ...newWork, title: e.target.value })}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="description">İş Açıklaması</label>
+              <textarea
+                id="description"
+                value={newWork.description}
+                onChange={(e) => setNewWork({ ...newWork, description: e.target.value })}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="cardNumber">Kart Numarası</label>
+              <input
+                type="text"
+                id="cardNumber"
+                value={newWork.cardNumber}
+                onChange={(e) => setNewWork({ ...newWork, cardNumber: e.target.value })}
+                required
+              />
+            </div>
+            <button type="submit" className="submit-btn">Güncelle</button>
+            <button type="button" className="cancel-btn" onClick={() => setIsEditMode(false)}>İptal</button>
+          </form>
+        </div>
+      )}
 
       <div className={`add-job-form ${isExpanded ? 'expanded' : 'collapsed'}`}>
         <button className="toggle-btn" onClick={() => setIsExpanded(!isExpanded)}>
@@ -92,22 +170,47 @@ const Dashboard = () => {
           <form onSubmit={handleAddWork}>
             <div className="input-group">
               <label htmlFor="title">İş Başlığı</label>
-              <input type="text" id="title" placeholder="İş Başlığı" value={newWork.title} onChange={(e) => setNewWork({ ...newWork, title: e.target.value })} required />
+              <input
+                type="text"
+                id="title"
+                placeholder="İş Başlığı"
+                value={newWork.title}
+                onChange={(e) => setNewWork({ ...newWork, title: e.target.value })}
+                required
+              />
             </div>
 
             <div className="input-group">
               <label htmlFor="description">İş Açıklaması</label>
-              <textarea id="description" placeholder="İş Açıklaması" value={newWork.description} onChange={(e) => setNewWork({ ...newWork, description: e.target.value })} required />
+              <textarea
+                id="description"
+                placeholder="İş Açıklaması"
+                value={newWork.description}
+                onChange={(e) => setNewWork({ ...newWork, description: e.target.value })}
+                required
+              />
             </div>
 
             <div className="input-group">
               <label htmlFor="cardNumber">Kart Numarası</label>
-              <input type="text" id="cardNumber" placeholder="Kart Numarası" value={newWork.cardNumber} onChange={(e) => setNewWork({ ...newWork, cardNumber: e.target.value })} required />
+              <input
+                type="text"
+                id="cardNumber"
+                placeholder="Kart Numarası"
+                value={newWork.cardNumber}
+                onChange={(e) => setNewWork({ ...newWork, cardNumber: e.target.value })}
+                required
+              />
             </div>
 
             <div className="input-group">
               <label htmlFor="file">PDF Yükle</label>
-              <input type="file" id="file" accept="application/pdf" onChange={(e) => setSelectedFile(e.target.files[0])} />
+              <input
+                type="file"
+                id="file"
+                accept="application/pdf"
+                onChange={(e) => setSelectedFile(e.target.files[0])}
+              />
             </div>
 
             <button type="submit" className="submit-btn">İş Ekle</button>
